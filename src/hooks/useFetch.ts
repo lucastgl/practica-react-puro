@@ -15,6 +15,8 @@ type FetchState<T> =
 
 export function useFetch<T>(url: string) { // decimos que es del tipo generico T, para que pueda ser cualquier tipo de dato que queramos traer de la API
     const [state, setState] = useState<FetchState<T>>({ status: 'idle' });
+    const [data, setData] = useState<T | null>(null);
+    const [message, setMessage] = useState<string>('');
 
     // useRef nos permite crear una referencia mutable que persiste durante todo el ciclo de vida del componente.
     // con esto podemos guardar el AbortController de la petición fetch, para poder cancelarla si es necesario.
@@ -43,16 +45,20 @@ export function useFetch<T>(url: string) { // decimos que es del tipo generico T
                 }
                 return res.json() as Promise<T>; // devolvemos la respuesta parseada a json
             })
-            .then((data) => setState({ status: 'success', data }))
+            .then((data) => {
+                setState({ status: 'success', data });
+                setData(data.results);
+            })
             .catch((error: unknown) => {
                 if (error instanceof Error && error.name === 'AbortError') return; // si la petición fue abortada, no hacemos nada
-                const message = error instanceof Error ? error.message : 'Unknown error';
-                setState({status: 'error', message})
+                const messageError = error instanceof Error ? error.message : 'Unknown error';
+                setState({status: 'error', message: messageError});
+                setMessage(messageError);
             })
 
         return () => {
             abortRef.current?.abort();
         }
     },[url]);
-    return state
+    return { ...state, data, message };
 }

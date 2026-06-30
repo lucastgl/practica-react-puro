@@ -8,11 +8,13 @@ import Navbar from "./Navbar";
 
 const Layout = ({children}: {children: React.ReactNode})=> {
     return (
-        <div>
+        <div className='min-h-screen bg-gray-900 text-white'>
             <Navbar/>
-            {children}
+            <main className='pt-14 max-w-6xl mx-auto px-6 py-8'>
+                {children}
+            </main>
         </div>
     )
 };
 
-export default Layout
+export default Layout;

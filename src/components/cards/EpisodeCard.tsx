@@ -1,21 +1,18 @@
 import type { EpisodesType } from "../../types/apis.ts";
 
-const EpisodesCard= ({ data }: { data: EpisodesType }) => {
-    return(
-        <div>
-            <div>
-                <h2>{data.name}</h2>
+const EpisodesCard = ({ data }: { data: EpisodesType }) => {
+    return (
+        <div className='bg-gray-800 border border-gray-700 rounded-xl p-5 flex flex-col gap-3 hover:border-green-400 transition-colors'>
+            <div className='flex items-start justify-between gap-3'>
+                <h2 className='text-white font-bold text-base leading-snug'>{data.name}</h2>
+                <span className='shrink-0 bg-green-400 text-gray-900 text-xs font-bold px-2 py-1 rounded-md'>
+                    {data.episode}
+                </span>
             </div>
-            <div>{data.url}</div>
-            <div>
-                <p>Personajes que aparecen en este episodio:</p>
-                {data.characters.map((character: string) => {
-                    return(
-                        <div key={character}>
-                            <p>{character}</p>
-                        </div>
-                    )
-                })}
+            <p className='text-gray-400 text-sm'>{data.air_date}</p>
+            <div className='mt-auto pt-3 border-t border-gray-700 flex items-center gap-2'>
+                <span className='text-gray-500 text-xs'>👥</span>
+                <span className='text-gray-400 text-xs'>{data.characters.length} characters</span>
             </div>
         </div>
     )
