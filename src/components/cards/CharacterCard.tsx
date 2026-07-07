@@ -6,7 +6,6 @@ const statusStyles: Record<string, string> = {
     Alive: 'bg-green-400/20 text-green-400',
     Dead:  'bg-red-400/20 text-red-400',
 };
-
 const statusDot: Record<string, string> = {
     Alive: 'bg-green-400',
     Dead:  'bg-red-400',

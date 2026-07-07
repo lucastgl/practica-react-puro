@@ -11,7 +11,7 @@ const Characters = () => {
 
     return (
         <div>
-            <h1 className='text-4xl font-bold text-center my-6'>Personajes de Rick y Morty</h1>
+            <h2 className='text-4xl font-bold text-center my-6'>Personajes de Rick y Morty</h2>
             <Pagination
                 currentPage={page}
                 totalPages={data?.info.pages ?? 1}

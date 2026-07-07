@@ -1,28 +1,31 @@
-import type { EpisodesType } from '../types/apis.ts';
-import EpisodesCard from '../components/cards/EpisodeCard.tsx';
-import { useState, useEffect } from 'react';
+import type { EpisodesApiType, EpisodesType } from '../types/apis.ts';
 import { useFetch } from '../hooks/useFetch.ts';
+import { usePagination} from '../hooks/usePagination.ts'
+import Pagination from '../components/shared/Pagination.tsx';
+import EpisodesCard from '../components/cards/EpisodeCard.tsx';
 
 const Episodes = () => {
 
-    const [dataEpisodes, setDataEpisodes] = useState<EpisodesType[]>([]);
-    const { status, data, message } = useFetch<EpisodesType[]>('https://rickandmortyapi.com/api/episode');
-
-    useEffect(() => {
-        if (status === 'success' && data) {
-            setDataEpisodes(data);
-        }
-    }, [status, data]);
+    const { page, url, nextPage, prevPage} = usePagination('https://rickandmortyapi.com/api/episode')
+    const { status, data, message } = useFetch<EpisodesApiType>(url);
 
     return (
         <div>
-            <p>Episodios de Rick y Morty</p>
+            <h2 className='text-4xl font-bold text-center my-6'>Episodios de Rick y Morty</h2>
+            <Pagination
+                currentPage={page}
+                totalPages={data?.info.pages ?? 1}
+                hasPrev={!!data?.info.prev}
+                hasNext={!!data?.info.next}
+                onPrev={prevPage}
+                onNext={nextPage}
+            />
             {status === 'fetching' ?
                 <p>Cargando...</p> :
 
-                data && Array.isArray(data) ? (
+                data?.results && Array.isArray(data.results) ? (
                     <div className='grid grid-cols-3 gap-4'>
-                        {dataEpisodes.map((episode: EpisodesType) => {
+                        {data?.results.map((episode: EpisodesType) => {
                             return (
                                 <EpisodesCard
                                     key={episode.id}

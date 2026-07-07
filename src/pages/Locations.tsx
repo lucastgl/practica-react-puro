@@ -1,30 +1,32 @@
-import type { LocationType } from "../types/apis";
-import LocationCard from "../components/cards/LocationCard";
-import { useState, useEffect } from "react";
+import type { LocationType, LocationApiType } from "../types/apis";
 import { useFetch } from "../hooks/useFetch";
+import { usePagination } from "../hooks/usePagination";
+import Pagination from "../components/shared/Pagination"
+import LocationCard from "../components/cards/LocationCard";
 
 
 const Locations = () => {
 
-    const [dataLocations, setDataLocations] = useState<LocationType[]>([])
-    const { status, data, message } = useFetch<LocationType[]>('https://rickandmortyapi.com/api/location')
-
-    useEffect(() => {
-        if (status === 'success' && data) {
-            setDataLocations(data);
-        }
-    }, [status, data]);
-
+    const { page, url, nextPage, prevPage } = usePagination('https://rickandmortyapi.com/api/location')
+    const { status, data, message } = useFetch<LocationApiType>(url)
 
     return (
         <div>
-            <p>Ubicaciones del universo de Rick y Morty</p>
+            <h2 className='text-4xl font-bold text-center my-6'>Ubicaciones del universo de Rick y Morty</h2>
+            <Pagination
+                currentPage={page}
+                totalPages={data?.info.pages ?? 1}
+                hasPrev={!!data?.info.prev}
+                hasNext={!!data?.info.next}
+                onPrev={prevPage}
+                onNext={nextPage}
+            />
             {status === 'fetching' ?
                 <p>Cargando...</p> :
-                data && Array.isArray(data) ? (
+                data?.results && Array.isArray(data?.results) ? (
                     <div className='grid grid-cols-3 gap-4'>
                         {
-                            dataLocations.map((location: LocationType) => {
+                            data?.results.map((location: LocationType) => {
                                 return (
                                     <LocationCard
                                         key={location.id}

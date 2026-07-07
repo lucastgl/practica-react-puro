@@ -24,6 +24,16 @@ export type CharacterType = {
     created: string;	//Time at which the character was created in the database.
 }
 
+export type EpisodesApiType = {
+    info: {
+        count: number;
+        next: string | null;
+        pages: number;
+        prev: string | null;
+    }
+    results: EpisodesType[];
+}
+
 export type EpisodesType = {
     id: number;//	The id of the episode.
     name: string;	//The name of the episode.
@@ -32,6 +42,17 @@ export type EpisodesType = {
     characters: string[];	//List of characters who have been seen in the episode.
     url: string;	//Link to the episode's own endpoint.
     created: string;	//Time at which the episode was created in the database.
+}
+
+
+export type LocationApiType = {
+    info: {
+        count: number;
+        next: string | null;
+        pages: number;
+        prev: string | null;
+    }
+    results: LocationType[];
 }
 
 export type LocationType = {
