@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState, useMemo } from "react";
 import type { CharacterType, LocationType, EpisodesType } from '../types/apis.ts'
 
 type FavoritesContextType = {
@@ -22,36 +22,43 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
     //Episodes
     const [espisodesFavorites, setEspisodesFavorites] = useState<EpisodesType[]>([]);
 
-    const addEpisode = (item: EpisodesType) =>
-        setEspisodesFavorites((prev) => [...prev, item]);
+    const addEpisode = useCallback((item: EpisodesType) =>
+        setEspisodesFavorites((prev) => [...prev, item]), []);
 
-    const removeEpisode = (id: number) =>
-        setEspisodesFavorites((prev) => prev.filter((f) => f.id !== id));
+    const removeEpisode = useCallback((id: number) =>
+        setEspisodesFavorites((prev) => prev.filter((f) => f.id !== id)), [])
 
     //Locations
     const [locationFavorites, setLocationsFavorites] = useState<LocationType[]>([]);
 
-    const addLocation = (item: LocationType) =>
-        setLocationsFavorites((prev) => [...prev, item])
+    const addLocation = useCallback((item: LocationType) =>
+        setLocationsFavorites((prev) => [...prev, item]), [])
 
-    const removeLocation = (id: number) =>
-        setLocationsFavorites((prev) => prev.filter((f) => f.id !== id))
+    const removeLocation = useCallback((id: number) =>
+        setLocationsFavorites((prev) => prev.filter((f) => f.id !== id)), [])
 
     //Characters
     const [characterFavorites, setCharactersFavorites] = useState<CharacterType[]>([])
 
-    const addCharacter = (item: CharacterType) =>
-        setCharactersFavorites((prev) => [...prev, item])
+    const addCharacter = useCallback((item: CharacterType) =>
+        setCharactersFavorites((prev) => [...prev, item]), [])
 
-    const removeCharacter = (id: number) =>
-        setCharactersFavorites((prev) => prev.filter((f) => f.id !== id))
+    const removeCharacter = useCallback((id: number) =>
+        setCharactersFavorites((prev) => prev.filter((f) => f.id !== id)), [])
+
+
+    const value = useMemo(() => ({
+        espisodesFavorites, addEpisode, removeEpisode,
+        locationFavorites, addLocation, removeLocation,
+        characterFavorites, addCharacter, removeCharacter
+    }), [
+        espisodesFavorites, addEpisode, removeEpisode,
+        locationFavorites, addLocation, removeLocation,
+        characterFavorites, addCharacter, removeCharacter
+    ]);
 
     return (
-        <FavoritesContext.Provider value={{ 
-            espisodesFavorites, addEpisode, removeEpisode, 
-            locationFavorites, addLocation, removeLocation, 
-            characterFavorites, addCharacter, removeCharacter
-        }}>
+        <FavoritesContext.Provider value={value}>
             {children}
         </FavoritesContext.Provider>
     );
@@ -59,6 +66,6 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 
 export function useFavorites() {
     const ctx = useContext(FavoritesContext)
-    if(!ctx) throw new Error('useFavorites must be used inside FavoritesProvider')
+    if (!ctx) throw new Error('useFavorites must be used inside FavoritesProvider')
     return ctx
 }

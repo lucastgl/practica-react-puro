@@ -1,4 +1,14 @@
 
+export type CharacterApiType = {
+    info: {
+        count: number;
+        next: string | null;
+        pages: number;
+        prev: string | null;
+    }
+    results: CharacterType[];
+}
+
 export type CharacterType = {
     id: number;	//The id of the character.
     name: string;	//The name of the character.
@@ -10,7 +20,7 @@ export type CharacterType = {
     location: object;	//Name and link to the character's last known location endpoint.
     image: string; 	// url Link to the character's image. All images are 300x300px and most are medium shots or portraits since they are intended to be used as avatars.
     episode: string[]; // url List of episodes in which this character appeared.
-    url: string ;	//url Link to the character's own URL endpoint.
+    url: string;	//url Link to the character's own URL endpoint.
     created: string;	//Time at which the character was created in the database.
 }
 

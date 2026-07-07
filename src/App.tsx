@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import ErrorBoundary from './components/shared/ErrorBoundary'
 import Layout from './components/layout/Layout'
 import Characters from './pages/Characters'
 import Locations from './pages/Locations'
@@ -16,10 +17,10 @@ function App() {
         <Layout>
           <Routes>
             <Route path='/' element={<Navigate to='/Characters' />} />
-            <Route path='/characters' element={<Characters />} />
-            <Route path='/Locations' element={<Locations />} />
-            <Route path='/Episodes' element={<Episodes />} />
-            <Route path='/Favorites' element={<Favorites />} />
+            <Route path='/characters' element={<ErrorBoundary><Characters /></ErrorBoundary>} />
+            <Route path='/Locations' element={<ErrorBoundary><Locations /></ErrorBoundary>} />
+            <Route path='/Episodes' element={<ErrorBoundary><Episodes /></ErrorBoundary>} />
+            <Route path='/Favorites' element={<ErrorBoundary><Favorites /></ErrorBoundary>} />
           </Routes>
         </Layout>
       </BrowserRouter>

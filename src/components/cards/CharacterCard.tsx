@@ -1,5 +1,6 @@
 import type { CharacterType } from '../../types/apis.ts'
 import { useFavorites } from '../../context/Context.tsx';
+import { memo, useCallback } from 'react';
 
 const statusStyles: Record<string, string> = {
     Alive: 'bg-green-400/20 text-green-400',
@@ -11,18 +12,18 @@ const statusDot: Record<string, string> = {
     Dead:  'bg-red-400',
 };
 
-const CharacterCard = ({ data }: { data: CharacterType }) => {
+const CharacterCard = memo(({ data }: { data: CharacterType }) => {
     const { addCharacter, removeCharacter, characterFavorites } = useFavorites();
     const statusClass = statusStyles[data.status] ?? 'bg-gray-500/20 text-gray-400';
     const dotClass   = statusDot[data.status]    ?? 'bg-gray-400';
 
-    const handleFavorite = () =>{
+    const handleFavorite = useCallback(() =>{
         if(characterFavorites.some((f:CharacterType) => f.id === data.id)){
             removeCharacter(data.id)
         }else{
             addCharacter(data)
         }
-    }
+    }, [data.id, characterFavorites, addCharacter, removeCharacter])
 
     return (
         <div className='bg-gray-800 border border-gray-700 rounded-xl overflow-hidden hover:border-cyan-400 transition-colors'>
@@ -50,6 +51,6 @@ const CharacterCard = ({ data }: { data: CharacterType }) => {
             </div>
         </div>
     )
-}
+})
 
 export default CharacterCard;

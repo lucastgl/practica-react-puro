@@ -47,7 +47,7 @@ export function useFetch<T>(url: string) { // decimos que es del tipo generico T
             })
             .then((data) => {
                 setState({ status: 'success', data });
-                setData(data.results);
+                setData(data);
             })
             .catch((error: unknown) => {
                 if (error instanceof Error && error.name === 'AbortError') return; // si la petición fue abortada, no hacemos nada
