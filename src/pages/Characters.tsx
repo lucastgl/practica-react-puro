@@ -1,17 +1,23 @@
 import type { CharacterApiType, CharacterType } from "../types/apis";
-import CharacterCard from "../components/cards/CharacterCard";
+
 import { useFetch } from "../hooks/useFetch";
 import { usePagination } from "../hooks/usePagination";
+import { useSearch } from "../hooks/useSearch";
+
+import CharacterCard from "../components/cards/CharacterCard";
 import Pagination from "../components/shared/Pagination";
 import ErrorBoundary from "../components/shared/ErrorBoundary";
+import SearchBar from "../components/shared/SearchBar";
 
 const Characters = () => {
-    const { page, url, nextPage, prevPage } = usePagination('https://rickandmortyapi.com/api/character')
+    const { value, debounceValue, onChange } = useSearch(500);
+    const { page, url, nextPage, prevPage } = usePagination('https://rickandmortyapi.com/api/character/', { search: debounceValue })
     const { status, data, message } = useFetch<CharacterApiType>(url);
 
     return (
         <div>
             <h2 className='text-4xl font-bold text-center my-6'>Personajes de Rick y Morty</h2>
+            <SearchBar value={value} onChange={onChange}/>
             <Pagination
                 currentPage={page}
                 totalPages={data?.info.pages ?? 1}
@@ -20,6 +26,7 @@ const Characters = () => {
                 onPrev={prevPage}
                 onNext={nextPage}
             />
+
             {status === 'fetching' ?
                 <p>Cargando...</p> :
                 data?.results && Array.isArray(data.results) ? (

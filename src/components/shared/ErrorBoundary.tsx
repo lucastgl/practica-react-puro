@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from "react";
+import ErrorImage from "../../assets/OcurrioUnError.png";
 
 type Props = { children: ReactNode; fallback?: ReactNode }
 type State = { hasError: boolean }
@@ -19,10 +20,19 @@ export default class ErrorBoundary extends Component<Props, State> {
 
     render() {
         if (this.state.hasError) {
+            //Si el state tiene un error, renderizamos el fallback que nos pasaron por props, o un mensaje de error por defecto
             return this.props.fallback ?? (
-                <p className='text-red-400 text-center py-8'>Ocurrió un error al mostrar esta página.</p>
+                <div className='flex flex-col justify-center items-center py-8 gap-4'>
+                    <p className='text-red-400 text-2xl font-bold text-center'>Ocurrió un error inesperado</p>
+                    <img
+                        src={ErrorImage}
+                        alt='Ocurrió un error al mostrar esta página'
+                        className='max-w-2xl w-full mask-[radial-gradient(ellipse_60%_60%_at_center,black_55%,transparent_100%)]'
+                    />
+                </div>
             );
         }
+        //Si no hay error, renderizamos los hijos normalmente.
         return this.props.children;
     }
 

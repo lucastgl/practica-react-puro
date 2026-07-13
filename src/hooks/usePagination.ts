@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
 
-export function usePagination(baseUrl: string) {
+export function usePagination(baseUrl: string, { search = "" }: { search?: string } = {}) {
     const [page, setPage] = useState(1);
 
     // esta funcion useMemo nos permite memorizar el valor de la url, para que no se vuelva a 
@@ -8,7 +8,13 @@ export function usePagination(baseUrl: string) {
     // las dependencias (baseUrl y page). Esto nos permite optimizar el rendimiento de la aplicacion,
     // ya que no se hace una nueva peticion fetch cada vez que se renderiza el componente, sino que
     // solo se hace cuando cambia la url.
-    const url = useMemo(() => `${baseUrl}?page=${page}`, [baseUrl, page]);
+    const url = useMemo(() => {
+        if(search != ""){
+            return `${baseUrl}?page=${page}&name=${search}`
+        }else{
+            return `${baseUrl}?page=${page}`
+        }
+    }, [baseUrl, page, search]);
     
     // estas funciones useCallback nos permiten memorizar las funciones prevPage y nextPage,
     // para que no se vuelvan a crear cada vez que se renderiza el componente, sino que solo se crean
