@@ -3,7 +3,10 @@ import type { CharacterApiType, CharacterType } from "../types/apis";
 import { useFetch } from "../hooks/useFetch";
 import { usePagination } from "../hooks/usePagination";
 import { useSearch } from "../hooks/useSearch";
+import { useMemo } from 'react';
+import { useCharacterFilters } from "../hooks/useCharacterFilters";
 
+import CharacterFilters from "../components/compound/CharacterFilters";
 import CharacterCard from "../components/cards/CharacterCard";
 import Pagination from "../components/shared/Pagination";
 import ErrorBoundary from "../components/shared/ErrorBoundary";
@@ -11,13 +14,28 @@ import SearchBar from "../components/shared/SearchBar";
 
 const Characters = () => {
     const { value, debounceValue, onChange } = useSearch(500);
-    const { page, url, nextPage, prevPage } = usePagination('https://rickandmortyapi.com/api/character/', { search: debounceValue })
-    const { status, data, message } = useFetch<CharacterApiType>(url);
+    const { filters, setStatus, setGender } = useCharacterFilters();
+    const params = useMemo(
+        () => ({
+            name: debounceValue,
+            status: filters.status,
+            gender: filters.gender,
+        }), [debounceValue, filters.status, filters.gender]
+    )
+    const { page, url, nextPage, prevPage } = usePagination('https://rickandmortyapi.com/api/character/', params);
+    const { status: fetchStatus, data, message } = useFetch<CharacterApiType>(url);
 
     return (
         <div>
             <h2 className='text-4xl font-bold text-center my-6'>Personajes de Rick y Morty</h2>
-            <SearchBar value={value} onChange={onChange}/>
+            
+            <SearchBar value={value} onChange={onChange} />
+
+            <CharacterFilters.Root status={filters.status} gender={filters.gender} setStatus={setStatus} setGender={setGender}>
+                <CharacterFilters.Status />
+                <CharacterFilters.Gender />
+            </CharacterFilters.Root>
+            
             <Pagination
                 currentPage={page}
                 totalPages={data?.info.pages ?? 1}
@@ -27,7 +45,7 @@ const Characters = () => {
                 onNext={nextPage}
             />
 
-            {status === 'fetching' ?
+            {fetchStatus === 'fetching' ?
                 <p>Cargando...</p> :
                 data?.results && Array.isArray(data.results) ? (
                     <div className='grid grid-cols-3 gap-4'>
@@ -45,7 +63,7 @@ const Characters = () => {
                             }
                         </ErrorBoundary>
                     </div>
-                ) : status === 'error' ? (
+                ) : fetchStatus === 'error' ? (
                     <p>Error: {message}</p>
                 ) : (
                     <p>No se encontraron personajes.</p>
